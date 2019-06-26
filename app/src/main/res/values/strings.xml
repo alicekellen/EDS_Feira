@@ -3,4 +3,5 @@
     <string name="title_activity_stock">StockActivity</string>
     <string name="title_activity_new_user">NewUserActivity</string>
     <string name="title_activity_new_product">NewProductActivity</string>
+    <string name="title_activity_new_password">NewPasswordActivity</string>
 </resources>

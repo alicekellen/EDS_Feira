@@ -9,8 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.engenharia.feiraapplication.FeiraApplication;
 import com.engenharia.feiraapplication.R;
 import com.engenharia.feiraapplication.model.User;
 import com.engenharia.feiraapplication.service.DBCommandsUser;
@@ -19,8 +21,10 @@ public class NewUserActivity extends AppCompatActivity {
 
     private EditText mEdtName;
     private EditText mEdtPassword;
+    private TextView mTxvConfirmPassword;
     private EditText mEdtConfirmPassword;
     private Button mBtnRegister;
+    private Button mBtnDelete;
     private DBCommandsUser commandsUser;
 
     @Override
@@ -30,6 +34,15 @@ public class NewUserActivity extends AppCompatActivity {
         commandsUser = new DBCommandsUser(this);
         initUI();
         configureListener();
+        long userId = FeiraApplication.getInstance().getUserSession();
+        if(FeiraApplication.getInstance().getUserSession() != 0){
+            User user = commandsUser.selectUserById(userId);
+            mEdtName.setText(user.getName());
+            mEdtPassword.setText("******");
+            mTxvConfirmPassword.setVisibility(View.GONE);
+            mEdtConfirmPassword.setVisibility(View.GONE);
+            mBtnDelete.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initUI() {
@@ -39,7 +52,9 @@ public class NewUserActivity extends AppCompatActivity {
         mEdtName = (EditText) findViewById(R.id.edt_name);
         mEdtPassword = (EditText) findViewById(R.id.edt_password);
         mEdtConfirmPassword = (EditText) findViewById(R.id.edt_confirm_password);
+        mTxvConfirmPassword = (TextView) findViewById(R.id.txv_confirm_password);
         mBtnRegister = (Button) findViewById(R.id.btn_register);
+        mBtnDelete = (Button) findViewById(R.id.btn_delete);
     }
 
     private void configureListener() {
@@ -52,6 +67,19 @@ public class NewUserActivity extends AppCompatActivity {
                     }else{
                         Toast.makeText(NewUserActivity.this, "Não foi possível realizar o cadastro.", Toast.LENGTH_SHORT).show();
                     }
+                }
+            }
+        });
+
+        mBtnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(commandsUser.delete(getUser()) > 0){
+                    setResult(RESULT_OK);
+                    FeiraApplication.getInstance().setUserSession(0);
+                    finish();
+                }else{
+                    Toast.makeText(NewUserActivity.this, "Não foi possível excluir o cadastro.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

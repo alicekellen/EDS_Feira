@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
         mBtnNewPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Nova senha
+                Intent intent = new Intent(MainActivity.this, NewPasswordActivity.class);
+                startActivity(intent);
             }
         });
     }

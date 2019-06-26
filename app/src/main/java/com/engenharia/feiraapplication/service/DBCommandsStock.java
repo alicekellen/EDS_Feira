@@ -37,12 +37,16 @@ public class DBCommandsStock {
         }
     }
 
-    public long update(User user){
+    public long update(Product product){
         ContentValues valores = new ContentValues();
-        valores.put("name", user.getName());
-        valores.put("password", user.getPassword());
+        valores.put("name", product.getName());
+        valores.put("marketplace", product.getMarketplace());
+        valores.put("date", product.getDate());
+        valores.put("quantity", product.getQuantity());
+        valores.put("price", product.getPrice());
         try{
-            long result = db.update("user", valores, " name = ? AND password = ?", new String[]{user.getName(), user.getPassword()});
+            long result = db.update("product", valores, " name = ? AND marketplace = ? AND date = ? AND quantity = ? AND price = ? ",
+                    new String[]{product.getName(), product.getMarketplace(), product.getDate(), String.valueOf(product.getQuantity()), product.getPrice()});
 
             return result;
         }catch (Exception e){
@@ -66,8 +70,8 @@ public class DBCommandsStock {
         }
     }
 
-    public long delete(User user){
-        return db.delete("user", " _id = ?", new String[]{String.valueOf(user.getId())});
+    public long delete(Product product){
+        return db.delete("product", " _id = ?", new String[]{String.valueOf(product.getId())});
     }
 
     public List<Product> selectAll(long idUser){
