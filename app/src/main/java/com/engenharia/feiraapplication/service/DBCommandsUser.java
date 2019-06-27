@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.engenharia.feiraapplication.model.Product;
 import com.engenharia.feiraapplication.model.User;
 
 public class DBCommandsUser {
@@ -33,8 +34,22 @@ public class DBCommandsUser {
         }
     }
 
+    public long update(User user){
+        ContentValues valores = new ContentValues();
+        valores.put("name", user.getName());
+        valores.put("password", user.getPassword());
+        try{
+            long result = db.update("user", valores, " _id = ? ",
+                    new String[]{String.valueOf(user.getId())});
+
+            return result;
+        }catch (Exception e){
+            return -1;
+        }
+    }
+
     public long delete(User user){
-        return db.delete("user", " name = ?", new String[]{user.getName()});
+        return db.delete("user", " _id = ?", new String[]{String.valueOf(user.getId())});
     }
 
     public long changePassword(String name, String password){

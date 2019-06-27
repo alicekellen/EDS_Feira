@@ -45,8 +45,8 @@ public class DBCommandsStock {
         valores.put("quantity", product.getQuantity());
         valores.put("price", product.getPrice());
         try{
-            long result = db.update("product", valores, " name = ? AND marketplace = ? AND date = ? AND quantity = ? AND price = ? ",
-                    new String[]{product.getName(), product.getMarketplace(), product.getDate(), String.valueOf(product.getQuantity()), product.getPrice()});
+            long result = db.update("product", valores, " _id = ? ",
+                    new String[]{String.valueOf(product.getId())});
 
             return result;
         }catch (Exception e){

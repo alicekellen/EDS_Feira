@@ -38,9 +38,9 @@ public class NewUserActivity extends AppCompatActivity {
         if(FeiraApplication.getInstance().getUserSession() != 0){
             User user = commandsUser.selectUserById(userId);
             mEdtName.setText(user.getName());
-            mEdtPassword.setText("******");
             mTxvConfirmPassword.setVisibility(View.GONE);
             mEdtConfirmPassword.setVisibility(View.GONE);
+            mBtnRegister.setText("Atualizar");
             mBtnDelete.setVisibility(View.VISIBLE);
         }
     }
@@ -62,7 +62,13 @@ public class NewUserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(verifyFields()){
-                    if(commandsUser.insert(getUser()) > 0){
+                    if(FeiraApplication.getInstance().getUserSession() != 0){
+                        User user = getUser();
+                        user.setId(FeiraApplication.getInstance().getUserSession());
+                        if(commandsUser.update(user) > 0){
+                            finish();
+                        }
+                    }else if(commandsUser.insert(getUser()) > 0){
                         finish();
                     }else{
                         Toast.makeText(NewUserActivity.this, "Não foi possível realizar o cadastro.", Toast.LENGTH_SHORT).show();
@@ -74,7 +80,9 @@ public class NewUserActivity extends AppCompatActivity {
         mBtnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(commandsUser.delete(getUser()) > 0){
+                User user = getUser();
+                user.setId(FeiraApplication.getInstance().getUserSession());
+                if(commandsUser.delete(user) > 0){
                     setResult(RESULT_OK);
                     FeiraApplication.getInstance().setUserSession(0);
                     finish();
@@ -93,12 +101,19 @@ public class NewUserActivity extends AppCompatActivity {
     }
 
     private boolean verifyFields() {
-        if(mEdtName.getText().toString().equals("") || mEdtPassword.getText().toString().equals("") || mEdtConfirmPassword.getText().toString().equals("")){
-            Toast.makeText(NewUserActivity.this, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show();
-            return false;
-        }else if(!mEdtPassword.getText().toString().equals(mEdtConfirmPassword.getText().toString())){
-            Toast.makeText(NewUserActivity.this, "As senhas não conferem", Toast.LENGTH_SHORT).show();
-            return false;
+        if(FeiraApplication.getInstance().getUserSession() != 0){
+            if(mEdtName.getText().toString().equals("") || mEdtPassword.getText().toString().equals("")){
+                Toast.makeText(NewUserActivity.this, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }else {
+            if(mEdtName.getText().toString().equals("") || mEdtPassword.getText().toString().equals("") || mEdtConfirmPassword.getText().toString().equals("")){
+                Toast.makeText(NewUserActivity.this, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show();
+                return false;
+            }else if(!mEdtPassword.getText().toString().equals(mEdtConfirmPassword.getText().toString())){
+                Toast.makeText(NewUserActivity.this, "As senhas não conferem", Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
         return true;
     }

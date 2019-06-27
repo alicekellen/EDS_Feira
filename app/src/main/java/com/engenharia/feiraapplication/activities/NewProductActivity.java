@@ -61,6 +61,10 @@ public class NewProductActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(verifyFields()){
                     if(product != null){
+                        product.setName(mEdtName.getText().toString());
+                        product.setMarketplace(mEdtMarketplace.getText().toString());
+                        product.setQuantity(Integer.parseInt(mEdtQuantity.getText().toString()));
+                        product.setPrice(mEdtPrice.getText().toString());
                         long result = commandsStock.update(product);
                         if(result > 0){
                             finish();

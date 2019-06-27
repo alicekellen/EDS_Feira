@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                         FeiraApplication.getInstance().setUserSession(user);
                         Intent intent = new Intent(MainActivity.this, StockActivity.class);
                         startActivity(intent);
+                        clearFields();
                     }else{
                         Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
                     }
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, NewUserActivity.class);
                 startActivity(intent);
+                clearFields();
             }
         });
 
@@ -71,8 +73,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, NewPasswordActivity.class);
                 startActivity(intent);
+                clearFields();
             }
         });
+    }
+
+    private void clearFields() {
+        mEdtLogin.setText("");
+        mEdtPassword.setText("");
     }
 
     private boolean verifyFields() {
