@@ -94,9 +94,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
                     }
                 }else{
-
+                    Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
             }
         });
 

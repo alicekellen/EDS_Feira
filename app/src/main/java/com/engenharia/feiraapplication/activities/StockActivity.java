@@ -47,8 +47,12 @@ public class StockActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        configureStock();
-        mEdtFilter.setText("");
+        if(FeiraApplication.getInstance().getUserSession() == 0){
+            finish();
+        }else{
+            configureStock();
+            mEdtFilter.setText("");
+        }
     }
 
     private void configureStock() {
