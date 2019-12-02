@@ -64,34 +64,39 @@ public class MainActivity extends AppCompatActivity {
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User userTemp = commandsUser.selectUser(mEdtLogin.getText().toString());
-                if(userTemp != null){
-                    if(verifyExistUserPwd(mEdtLogin.getText().toString())){
-                        if (verifyFields()) {
-                            long user = commandsUser.login(mEdtLogin.getText().toString(), mEdtPassword.getText().toString());
-                            if (user != -1) {
-                                FeiraApplication.getInstance().setUserSession(user);
-                                FeiraApplication.getInstance().setRecoverPassword(false);
-                                Intent intent = new Intent(MainActivity.this, StockActivity.class);
-                                MainActivity.this.startActivity(intent);
-                                clearFields();
-                            } else {
-                                Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
+                if(!mEdtLogin.getText().toString().equals("")){
+                    User userTemp = commandsUser.selectUser(mEdtLogin.getText().toString());
+                    if(userTemp != null){
+                        if(verifyExistUserPwd(mEdtLogin.getText().toString())){
+                            if (verifyFields()) {
+                                long user = commandsUser.login(mEdtLogin.getText().toString(), mEdtPassword.getText().toString());
+                                if (user != -1) {
+                                    FeiraApplication.getInstance().setUserSession(user);
+                                    FeiraApplication.getInstance().setRecoverPassword(false);
+                                    Intent intent = new Intent(MainActivity.this, StockActivity.class);
+                                    MainActivity.this.startActivity(intent);
+                                    clearFields();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
+                                }
                             }
+                        }else if(!mEdtPassword.getText().toString().equals("")){
+                            Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
+                        }else{
+                            //Obriga a redefinir uma senha
+                            FeiraApplication.getInstance().setUserSession(userTemp.getId());
+                            FeiraApplication.getInstance().setRecoverPassword(true);
+                            Intent intent = new Intent(MainActivity.this, NewUserActivity.class);
+                            startActivity(intent);
+                            clearFields();
                         }
-                    }else if(!mEdtPassword.getText().toString().equals("")){
-                        Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
                     }else{
-                        //Obriga a redefinir uma senha
-                        FeiraApplication.getInstance().setUserSession(userTemp.getId());
-                        FeiraApplication.getInstance().setRecoverPassword(true);
-                        Intent intent = new Intent(MainActivity.this, NewUserActivity.class);
-                        startActivity(intent);
-                        clearFields();
+                        Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
                     }
                 }else{
-                    Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
+
                 }
+                Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
             }
         });
 
