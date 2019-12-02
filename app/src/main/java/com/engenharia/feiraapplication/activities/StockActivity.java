@@ -3,18 +3,16 @@ package com.engenharia.feiraapplication.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.engenharia.feiraapplication.FeiraApplication;
 import com.engenharia.feiraapplication.R;
@@ -34,6 +32,7 @@ public class StockActivity extends AppCompatActivity {
     private DBCommandsStock commandsStock;
     private EditText mEdtFilter;
     private Button mBtnFilter;
+    private TextView mtvProductNull;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,26 +40,36 @@ public class StockActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stock);
         commandsStock = new DBCommandsStock(this);
         initUI();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_profile);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         configureStock();
+        mEdtFilter.setText("");
     }
 
     private void configureStock() {
+        mtvProductNull.setVisibility(View.GONE);
+        mLvStock.setVisibility(View.VISIBLE);
         stock = new ArrayList<>();
         if (listFilter == null || listFilter.isEmpty()) {
             stock = commandsStock.selectAll(FeiraApplication.getInstance().getUserSession());
 
-        }else{
+        } else {
             stock = listFilter;
         }
-        if (!stock.isEmpty()){
+        if (!stock.isEmpty()) {
             StockAdapter adapter = new StockAdapter(stock, this);
             mLvStock.setAdapter(adapter);
             listFilter = new ArrayList<>();
+        } else {
+            if (listFilter == null || listFilter.isEmpty()) {
+                mtvProductNull.setVisibility(View.VISIBLE);
+                mLvStock.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -71,13 +80,15 @@ public class StockActivity extends AppCompatActivity {
         mLvStock = (ListView) findViewById(R.id.lv_stock);
         mEdtFilter = (EditText) findViewById(R.id.edt_filter);
         mBtnFilter = (Button) findViewById(R.id.btn_filter);
+        mtvProductNull = (TextView) findViewById(R.id.tv_product_null);
 
         mBtnFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!stock.isEmpty()){
-                    for (Product p : stock){
-                        if(p.getName().toLowerCase().contains(mEdtFilter.getText().toString().toLowerCase())){
+                stock = commandsStock.selectAll(FeiraApplication.getInstance().getUserSession());
+                if (!stock.isEmpty()) {
+                    for (Product p : stock) {
+                        if (p.getName().toLowerCase().startsWith(mEdtFilter.getText().toString().toLowerCase())) {
                             listFilter.add(p);
                         }
                     }
@@ -113,7 +124,7 @@ public class StockActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             finish();
         }
     }

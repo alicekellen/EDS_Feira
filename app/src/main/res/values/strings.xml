@@ -4,4 +4,7 @@
     <string name="title_activity_new_user">NewUserActivity</string>
     <string name="title_activity_new_product">NewProductActivity</string>
     <string name="title_activity_new_password">NewPasswordActivity</string>
+    <string name="text_button_register"><u>Cadastrar</u></string>
+    <string name="text_button_new_pwd"><u>Recuperar Senha</u></string>
+    <string name="new_pwd">Redefinir Senha</string>
 </resources>

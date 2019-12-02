@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorWhite"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.StockActivity"
     tools:showIn="@layout/activity_stock">
@@ -12,6 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
         android:orientation="horizontal">
 
         <EditText
@@ -27,18 +29,30 @@
 
         <Button
             android:id="@+id/btn_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
-            android:text="Buscar"/>
+            android:background="@drawable/ic_find"/>
 
     </LinearLayout>
 
     <ListView
         android:id="@+id/lv_stock"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_product_null"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/margin_30"
+        android:layout_marginRight="@dimen/margin_30"
+        android:text="Não há produtos cadastrados para listar"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textSize="60px"
+        android:visibility="gone"/>
 
 </LinearLayout>

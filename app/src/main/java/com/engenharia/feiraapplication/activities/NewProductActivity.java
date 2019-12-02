@@ -1,8 +1,6 @@
 package com.engenharia.feiraapplication.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -14,7 +12,6 @@ import android.widget.Toast;
 import com.engenharia.feiraapplication.FeiraApplication;
 import com.engenharia.feiraapplication.R;
 import com.engenharia.feiraapplication.model.Product;
-import com.engenharia.feiraapplication.model.User;
 import com.engenharia.feiraapplication.service.DBCommandsStock;
 
 import java.util.Date;
@@ -42,12 +39,14 @@ public class NewProductActivity extends AppCompatActivity {
     }
 
     private void configureLayout() {
-        if(product != null){
+        mBtnDeleteProduct.setVisibility(View.GONE);
+        if (product != null) {
             mEdtName.setText(product.getName());
             mEdtMarketplace.setText(product.getMarketplace());
             mEdtQuantity.setText(String.valueOf(product.getQuantity()));
             mEdtPrice.setText(product.getPrice());
             mBtnRegisterProduct.setText("Atualizar dados");
+            mBtnDeleteProduct.setVisibility(View.VISIBLE);
         }
     }
 
@@ -59,23 +58,28 @@ public class NewProductActivity extends AppCompatActivity {
         mBtnRegisterProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(verifyFields()){
-                    if(product != null){
+                if (verifyFields()) {
+                    if (product != null) {
                         product.setName(mEdtName.getText().toString());
                         product.setMarketplace(mEdtMarketplace.getText().toString());
                         product.setQuantity(Integer.parseInt(mEdtQuantity.getText().toString()));
                         product.setPrice(mEdtPrice.getText().toString());
                         long result = commandsStock.update(product);
-                        if(result > 0){
+                        if (result > 0) {
                             finish();
-                        }else{
+                        } else {
                             Toast.makeText(NewProductActivity.this, "Não foi possível atualizar o produto.", Toast.LENGTH_SHORT).show();
                         }
-                    }else{
+                    } else {
                         long result = commandsStock.insert(getProduct());
-                        if(result > 0){
+                        if (result > 0) {
+                            if (product != null){
+                                Toast.makeText(NewProductActivity.this, "Produto atualizado com sucesso.", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(NewProductActivity.this, "Produto cadastrado com sucesso.", Toast.LENGTH_SHORT).show();
+                            }
                             finish();
-                        }else{
+                        } else {
                             Toast.makeText(NewProductActivity.this, "Não foi possível cadastrar o produto.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -86,11 +90,11 @@ public class NewProductActivity extends AppCompatActivity {
         mBtnDeleteProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(verifyFields()){
+                if (verifyFields()) {
                     long result = commandsStock.delete(product);
-                    if(result > 0){
+                    if (result > 0) {
                         finish();
-                    }else{
+                    } else {
                         Toast.makeText(NewProductActivity.this, "Não foi possível excluir o produto.", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -112,10 +116,10 @@ public class NewProductActivity extends AppCompatActivity {
     }
 
     private boolean verifyFields() {
-        if(mEdtName.getText().toString().equals("")
-        || mEdtMarketplace.getText().toString().equals("")
-        || mEdtQuantity.getText().toString().equals("")
-        || mEdtPrice.getText().toString().equals("")){
+        if (mEdtName.getText().toString().equals("")
+                || mEdtMarketplace.getText().toString().equals("")
+                || mEdtQuantity.getText().toString().equals("")
+                || mEdtPrice.getText().toString().equals("")) {
             Toast.makeText(NewProductActivity.this, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show();
             return false;
         }

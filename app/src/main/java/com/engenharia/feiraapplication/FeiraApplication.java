@@ -3,8 +3,6 @@ package com.engenharia.feiraapplication;
 import android.app.Application;
 import android.util.Log;
 
-import com.engenharia.feiraapplication.model.User;
-
 public class FeiraApplication extends Application {
 
     private static FeiraApplication appInstance;

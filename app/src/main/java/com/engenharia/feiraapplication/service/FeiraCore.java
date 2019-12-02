@@ -16,7 +16,7 @@ public class FeiraCore extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table user(_id integer primary key autoincrement, name text not null, password text not null);");
+        db.execSQL("create table user(_id integer primary key autoincrement, name text not null, password text not null, email text not null);");
         db.execSQL("create table product(_id integer primary key autoincrement, name text not null, barcode integer, price text not null, date text not null, marketplace text not null, quantity integer not null, idUser integer not null);");
     }
 

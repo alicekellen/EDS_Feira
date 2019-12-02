@@ -26,6 +26,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:text="E-mail"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:inputType="textEmailAddress"
+        android:id="@+id/edt_email"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="Senha"/>
 
     <EditText
@@ -53,6 +66,8 @@
         android:id="@+id/btn_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/shape_button"
+        android:textColor="@color/colorWhite"
         android:text="Cadastrar"/>
 
     <Button
@@ -61,6 +76,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:visibility="gone"
+        android:background="@drawable/shape_button"
+        android:textColor="@color/colorWhite"
         android:text="Excluir"/>
 
 </LinearLayout>

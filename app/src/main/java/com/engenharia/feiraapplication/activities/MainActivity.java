@@ -1,8 +1,10 @@
 package com.engenharia.feiraapplication.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +32,22 @@ public class MainActivity extends AppCompatActivity {
         commandsUser = new DBCommandsUser(this);
         initUI();
         configureListener();
+        configFields();
+    }
+
+    private void configFields() {
+        InputFilter[] filterArray = new InputFilter[1];
+        filterArray[0] = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                String regexFilter = "[a-zA-Z0-9]*";
+                if (!source.toString().matches(regexFilter)) {
+                    return "";
+                }
+                return null;
+            }
+        };
+        mEdtLogin.setFilters(filterArray);
     }
 
     private void initUI() {
@@ -45,14 +63,14 @@ public class MainActivity extends AppCompatActivity {
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(verifyFields()){
+                if (verifyFields()) {
                     long user = commandsUser.login(mEdtLogin.getText().toString(), mEdtPassword.getText().toString());
-                    if(user != -1){
+                    if (user != -1) {
                         FeiraApplication.getInstance().setUserSession(user);
                         Intent intent = new Intent(MainActivity.this, StockActivity.class);
                         startActivity(intent);
                         clearFields();
-                    }else{
+                    } else {
                         Toast.makeText(MainActivity.this, "Não foi possível realizar o ligin.", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -84,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean verifyFields() {
-        if(mEdtLogin.getText().toString().equals("") || mEdtPassword.getText().toString().equals("")){
+        if (mEdtLogin.getText().toString().equals("") || mEdtPassword.getText().toString().equals("")) {
             Toast.makeText(this, "Login e Senha são obrigatórios.", Toast.LENGTH_SHORT).show();
             return false;
         }

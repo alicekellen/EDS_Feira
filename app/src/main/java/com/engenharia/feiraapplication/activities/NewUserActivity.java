@@ -1,10 +1,11 @@
 package com.engenharia.feiraapplication.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ public class NewUserActivity extends AppCompatActivity {
     private EditText mEdtPassword;
     private TextView mTxvConfirmPassword;
     private EditText mEdtConfirmPassword;
+    private EditText mEdtEmail;
     private Button mBtnRegister;
     private Button mBtnDelete;
     private DBCommandsUser commandsUser;
@@ -35,14 +37,17 @@ public class NewUserActivity extends AppCompatActivity {
         initUI();
         configureListener();
         long userId = FeiraApplication.getInstance().getUserSession();
-        if(FeiraApplication.getInstance().getUserSession() != 0){
+        if (FeiraApplication.getInstance().getUserSession() != 0) {
             User user = commandsUser.selectUserById(userId);
             mEdtName.setText(user.getName());
+            mEdtEmail.setText(user.getEmail());
+            mEdtPassword.setText("******");
             mTxvConfirmPassword.setVisibility(View.GONE);
             mEdtConfirmPassword.setVisibility(View.GONE);
             mBtnRegister.setText("Atualizar");
             mBtnDelete.setVisibility(View.VISIBLE);
         }
+        configFields();
     }
 
     private void initUI() {
@@ -52,25 +57,45 @@ public class NewUserActivity extends AppCompatActivity {
         mEdtName = (EditText) findViewById(R.id.edt_name);
         mEdtPassword = (EditText) findViewById(R.id.edt_password);
         mEdtConfirmPassword = (EditText) findViewById(R.id.edt_confirm_password);
+        mEdtEmail = (EditText) findViewById(R.id.edt_email);
         mTxvConfirmPassword = (TextView) findViewById(R.id.txv_confirm_password);
         mBtnRegister = (Button) findViewById(R.id.btn_register);
         mBtnDelete = (Button) findViewById(R.id.btn_delete);
+    }
+
+    private void configFields() {
+        InputFilter[] filterArray = new InputFilter[1];
+        filterArray[0] = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                String regexFilter = "[a-zA-Z0-9]*";
+                if (!source.toString().matches(regexFilter)) {
+                    return "";
+                }
+                return null;
+            }
+        };
+        mEdtName.setFilters(filterArray);
     }
 
     private void configureListener() {
         mBtnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(verifyFields()){
-                    if(FeiraApplication.getInstance().getUserSession() != 0){
+                if (verifyFields()) {
+                    if (FeiraApplication.getInstance().getUserSession() != 0) {
                         User user = getUser();
                         user.setId(FeiraApplication.getInstance().getUserSession());
-                        if(commandsUser.update(user) > 0){
+                        if (commandsUser.update(user) > 0) {
+                            Toast.makeText(NewUserActivity.this, "Usuário atualizado com sucesso.", Toast.LENGTH_SHORT).show();
                             finish();
+                        }else{
+                            Toast.makeText(NewUserActivity.this, "Não foi possível atualizar os dados.", Toast.LENGTH_SHORT).show();
                         }
-                    }else if(commandsUser.insert(getUser()) > 0){
+                    } else if (commandsUser.insert(getUser()) > 0) {
+                        Toast.makeText(NewUserActivity.this, "Usuário cadastrado com sucesso.", Toast.LENGTH_SHORT).show();
                         finish();
-                    }else{
+                    } else {
                         Toast.makeText(NewUserActivity.this, "Não foi possível realizar o cadastro.", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -82,11 +107,11 @@ public class NewUserActivity extends AppCompatActivity {
             public void onClick(View v) {
                 User user = getUser();
                 user.setId(FeiraApplication.getInstance().getUserSession());
-                if(commandsUser.delete(user) > 0){
+                if (commandsUser.delete(user) > 0) {
                     setResult(RESULT_OK);
                     FeiraApplication.getInstance().setUserSession(0);
                     finish();
-                }else{
+                } else {
                     Toast.makeText(NewUserActivity.this, "Não foi possível excluir o cadastro.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -97,20 +122,21 @@ public class NewUserActivity extends AppCompatActivity {
         User user = new User();
         user.setName(mEdtName.getText().toString());
         user.setPassword(mEdtPassword.getText().toString());
+        user.setEmail(mEdtEmail.getText().toString());
         return user;
     }
 
     private boolean verifyFields() {
-        if(FeiraApplication.getInstance().getUserSession() != 0){
-            if(mEdtName.getText().toString().equals("") || mEdtPassword.getText().toString().equals("")){
+        if (FeiraApplication.getInstance().getUserSession() != 0) {
+            if (mEdtName.getText().toString().equals("") || mEdtPassword.getText().toString().equals("") || mEdtEmail.getText().toString().equals("")) {
                 Toast.makeText(NewUserActivity.this, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show();
                 return false;
             }
-        }else {
-            if(mEdtName.getText().toString().equals("") || mEdtPassword.getText().toString().equals("") || mEdtConfirmPassword.getText().toString().equals("")){
+        } else {
+            if (mEdtName.getText().toString().equals("") || mEdtPassword.getText().toString().equals("") || mEdtConfirmPassword.getText().toString().equals("") || mEdtEmail.getText().toString().equals("")) {
                 Toast.makeText(NewUserActivity.this, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show();
                 return false;
-            }else if(!mEdtPassword.getText().toString().equals(mEdtConfirmPassword.getText().toString())){
+            } else if (!mEdtPassword.getText().toString().equals(mEdtConfirmPassword.getText().toString())) {
                 Toast.makeText(NewUserActivity.this, "As senhas não conferem", Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -124,8 +150,17 @@ public class NewUserActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.out:
+                this.finishAffinity();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.user_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
