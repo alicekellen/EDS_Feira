@@ -8,6 +8,7 @@ public class FeiraApplication extends Application {
     private static FeiraApplication appInstance;
     private static String TAG = "Feira/Application";
     private static long userSession;
+    private static boolean recoverPassword;
 
     @Override
     public void onCreate() {
@@ -26,5 +27,13 @@ public class FeiraApplication extends Application {
 
     public long getUserSession() {
         return this.userSession;
+    }
+
+    public static boolean isRecoverPassword() {
+        return recoverPassword;
+    }
+
+    public static void setRecoverPassword(boolean recoverPassword) {
+        FeiraApplication.recoverPassword = recoverPassword;
     }
 }

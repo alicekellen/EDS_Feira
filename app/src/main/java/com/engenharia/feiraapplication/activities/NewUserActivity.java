@@ -28,6 +28,7 @@ public class NewUserActivity extends AppCompatActivity {
     private Button mBtnRegister;
     private Button mBtnDelete;
     private DBCommandsUser commandsUser;
+    private boolean recoverPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +37,23 @@ public class NewUserActivity extends AppCompatActivity {
         commandsUser = new DBCommandsUser(this);
         initUI();
         configureListener();
+
+        recoverPassword = FeiraApplication.getInstance().isRecoverPassword();
+
         long userId = FeiraApplication.getInstance().getUserSession();
         if (FeiraApplication.getInstance().getUserSession() != 0) {
             User user = commandsUser.selectUserById(userId);
             mEdtName.setText(user.getName());
             mEdtEmail.setText(user.getEmail());
-            mEdtPassword.setText("******");
+            if(recoverPassword){
+                mBtnRegister.setText("Atualizar Senha");
+                mBtnDelete.setVisibility(View.GONE);
+            }else{
+                mBtnRegister.setText("Atualizar");
+                mBtnDelete.setVisibility(View.VISIBLE);
+            }
             mTxvConfirmPassword.setVisibility(View.GONE);
             mEdtConfirmPassword.setVisibility(View.GONE);
-            mBtnRegister.setText("Atualizar");
-            mBtnDelete.setVisibility(View.VISIBLE);
         }
         configFields();
     }
@@ -151,6 +159,7 @@ public class NewUserActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.out:
+                FeiraApplication.getInstance().setUserSession(0);
                 this.finishAffinity();
                 return true;
             default:

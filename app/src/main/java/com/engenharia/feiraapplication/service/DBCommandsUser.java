@@ -54,7 +54,7 @@ public class DBCommandsUser {
     }
 
     public long changePassword(String email, String password) {
-        User validation = selectUser(email);
+        User validation = selectUserByEmail(email);
         if (validation == null) {
             return 0;
         } else {
@@ -84,6 +84,21 @@ public class DBCommandsUser {
         return null;
     }
 
+    public User selectUserByEmail(String email) {
+        String[] colunas = new String[]{"_id", "name", "email", "password"};
+        Cursor cursor = db.query("user", colunas, " email = ?", new String[]{email}, null, null, null);
+        if (cursor != null && cursor.getCount() != 0) {
+            User user = new User();
+            cursor.moveToFirst();
+            user.setId(cursor.getLong(0));
+            user.setName(cursor.getString(1));
+            user.setPassword(cursor.getString(2));
+            user.setEmail(cursor.getString(3));
+            return user;
+        }
+        return null;
+    }
+
     public User selectUserById(long id) {
         String[] colunas = new String[]{"_id", "name", "password, email"};
         Cursor cursor = db.query("user", colunas, " _id = ?", new String[]{String.valueOf(id)}, null, null, null);
@@ -100,7 +115,7 @@ public class DBCommandsUser {
     }
 
     public long login(String login, String password) {
-        String[] colunas = new String[]{"_id", "name", "password"};
+        String[] colunas = new String[]{"_id", "name", "email", "password"};
         Cursor cursor = db.query("user", colunas, " name = ? AND password = ?", new String[]{login, password}, null, null, null);
         cursor.moveToFirst();
         if (cursor.getCount() != 0) {
